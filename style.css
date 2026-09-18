@@ -45,8 +45,7 @@ a { color: inherit; text-decoration: none; }
 
 /* nav */
 .nav {
-  position: sticky;
-  top: 0;
+  position: static;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -473,5 +472,13 @@ section {
   .contact {
     padding-left: 20px;
     padding-right: 20px;
+  }
+}
+
+/* desktop only: pin the nav to the top while scrolling */
+@media (min-width: 681px) {
+  .nav {
+    position: sticky;
+    top: 0;
   }
 }
