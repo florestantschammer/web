@@ -1,13 +1,13 @@
 :root {
   --bg: #0b0b0a;
-  --bg-alt: #17160f;
-  --bg-alt2: #1c1b16;
+  --bg-alt: #10150d;
+  --bg-alt2: #141c10;
   --fg: #f3f1ea;
   --muted: #cfccc2;
   --faint: #9a9789;
   --dim: #6f6d63;
   --border: #26251f;
-  --accent: #f5d020;
+  --accent: #c8ff3d;
 }
 
 * { box-sizing: border-box; }
@@ -131,6 +131,25 @@ a { color: inherit; text-decoration: none; }
   display: inline-block;
 }
 
+/* showreel */
+.reel {
+  padding: 96px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.reel-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--bg-alt2);
+  border: 1px solid var(--border);
+}
+.reel-inner iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* marquee */
 .marquee-wrap {
   border-bottom: 1px solid var(--border);
@@ -153,9 +172,69 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* section shell */
+
+/* vertical spine label */
+.spine {
+  position: fixed;
+  left: 18px;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  z-index: 6;
+  pointer-events: none;
+}
+.spine span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+/* scroll progress line */
+.progress {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 2px;
+  height: 100vh;
+  background: var(--border);
+  z-index: 6;
+}
+.progress-fill {
+  width: 100%;
+  background: var(--accent);
+  height: 0%;
+  transition: height 0.1s linear;
+}
+
+/* giant watermark numeral behind section titles */
+.watermark {
+  position: absolute;
+  top: -0.1em;
+  right: 24px;
+  font-size: clamp(140px, 18vw, 340px);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243,241,234,0.06);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+/* scroll reveal */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
 section {
+  position: relative;
   padding: 96px 48px;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 .section-head {
   display: flex;
@@ -176,39 +255,66 @@ section {
 .work-tile {
   position: relative;
   aspect-ratio: 16/10;
-  background: var(--bg-alt2);
+  background-color: var(--bg-alt2);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 24px;
   overflow: hidden;
-  transition: border-color 0.2s ease;
-  border: 1px solid transparent;
 }
 .work-tile img {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.35s ease, transform 0.6s ease;
-  transform: scale(1.03);
+  filter: grayscale(1) contrast(1.05);
+  transform: scale(1.05);
+  transition: opacity 0.4s ease, filter 0.5s ease, transform 0.6s ease;
 }
-.work-tile:hover img { opacity: 1; transform: scale(1); }
+.work-tile:hover img {
+  opacity: 1;
+  filter: grayscale(0) contrast(1);
+  transform: scale(1);
+}
 .work-tile::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(11,11,10,0.88) 0%, rgba(11,11,10,0.15) 55%, transparent 100%);
+  z-index: 1;
+  background: linear-gradient(to top, rgba(11,11,10,0.9) 0%, rgba(11,11,10,0.15) 55%, transparent 100%);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.4s ease;
 }
 .work-tile:hover::after { opacity: 1; }
-.work-tile .wt-title, .work-tile .wt-sub { position: relative; z-index: 1; }
+.work-tile .wt-title, .work-tile .wt-sub { position: relative; z-index: 2; }
+.wt-title {
+  display: inline-block;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+  padding-bottom: 2px;
+}
+.work-tile:hover .wt-title { border-color: var(--accent); }
+.platform-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(11,11,10,0.6);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg);
+}
+.work-tile:hover .platform-badge { color: var(--accent); }
 .work-tile.wide { grid-column: span 2; }
-.work-tile.alt { background: var(--bg-alt); }
-.work-tile:hover { border-color: var(--accent); }
+.work-tile.alt { background-color: var(--bg-alt); }
 .wt-title { font-size: 22px; font-weight: 700; }
 .work-tile.wide .wt-title { font-size: 28px; }
 .wt-sub {
